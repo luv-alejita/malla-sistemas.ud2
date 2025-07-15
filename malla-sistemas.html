@@ -1,0 +1,170 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Ingeniería de Sistemas</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f0f8ff;
+      text-align: center;
+      padding: 20px;
+    }
+    h1 {
+      color: #0047ab;
+      font-family: 'Brush Script MT', cursive;
+      font-size: 3em;
+      margin-bottom: 40px;
+    }
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(9, 1fr);
+      gap: 20px;
+      overflow-x: auto;
+    }
+    .semestre {
+      background: #ffffffcc;
+      padding: 10px;
+      border-radius: 10px;
+    }
+    .titulo-semestre {
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    .grid {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .btn {
+      border: none;
+      padding: 10px 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.2s;
+    }
+    .completado {
+      text-decoration: line-through;
+      opacity: 0.6;
+    }
+    .bloqueado {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .basico { background-color: #add8e6; }
+    .complementario { background-color: #cbf1c3; }
+    .electivo { background-color: #fcd5ce; }
+  </style>
+</head>
+<body>
+  <h1>Ingeniería de Sistemas</h1>
+
+  <div id="contenedor" class="grid-container"></div>
+
+  <script>
+    const materias = {
+      1: ["Programación Básica", "basico", 1, []],
+      2: ["Cátedra Francisco José de Caldas", "complementario", 1, []],
+      3: ["Cálculo Diferencial", "basico", 1, []],
+      4: ["Física Newtoniana", "basico", 1, []],
+      5: ["Seminario de Introducción a Ingeniería", "basico", 1, []],
+      6: ["Matemáticas Discretas", "basico", 1, []],
+      7: ["Arquitectura de Computadores", "basico", 1, []],
+
+      8: ["Cálculo Integral", "basico", 2, []],
+      9: ["Historia y Cultura Colombiana", "complementario", 2, []],
+      10: ["Álgebra Lineal", "basico", 2, []],
+      11: ["Programación Orientada a Objetos", "basico", 2, []],
+      12: ["Cátedra Democracia y Ciudadanía", "complementario", 2, []],
+      13: ["Teoría de Sistemas", "basico", 2, []],
+      14: ["Electromagnetismo", "basico", 2, []],
+
+      15: ["Electiva 1", "electivo", 3, []],
+      16: ["Cálculo Multivariado", "basico", 3, []],
+      17: ["Programación Avanzada", "basico", 3, []],
+      18: ["Ciencias de la Computación I", "basico", 3, []],
+      19: ["Probabilidad y Estadística", "basico", 3, []],
+      20: ["Análisis y Diseño de Sistemas", "basico", 3, []],
+      21: ["Grupo de Trabajo", "basico", 3, []],
+
+      22: ["Electiva 2", "electivo", 4, []],
+      23: ["Economía", "complementario", 4, []],
+      24: ["Ecuaciones Diferenciales", "basico", 4, []],
+      25: ["Métodos Numéricos", "basico", 4, []],
+      26: ["Ciencias de la Computación II", "basico", 4, []],
+      27: ["Modelos de Programación", "basico", 4, []],
+      28: ["Investigación de Operaciones I", "basico", 4, []],
+
+      29: ["Matemáticas Especiales", "basico", 5, []],
+      30: ["Fundamentos de Ingeniería de Software", "basico", 5, []],
+      31: ["Fundamentos de Redes de Comunicaciones", "basico", 5, []],
+      32: ["Bases de Datos", "basico", 5, []],
+      33: ["Fundamentos de Ciencias de Sistemas", "basico", 5, []],
+      34: ["Investigación de Operaciones II", "basico", 5, []],
+
+      35: ["Electiva 3", "electivo", 6, []],
+      36: ["Electiva 4", "electivo", 6, []],
+      37: ["Curso Obligatorio I (Ruta de Formación)", "basico", 6, []],
+      38: ["Curso Obligatorio II (Ruta de Formación)", "basico", 6, []],
+      39: ["Ingeniería Económica", "complementario", 6, []],
+      40: ["Procesos Estocásticos", "basico", 6, []],
+
+      41: ["Electiva 5", "electivo", 7, []],
+      42: ["Curso Obligatorio III (Ruta de Formación)", "basico", 7, []],
+      43: ["Curso Obligatorio IV (Ruta de Formación)", "basico", 7, []],
+      44: ["Sistemas Operativos", "basico", 7, []],
+      45: ["Teoría de la Información", "basico", 7, []],
+      46: ["Metodología de la Investigación", "basico", 7, []],
+
+      47: ["Electiva 6", "electivo", 8, []],
+      48: ["Electiva 7", "electivo", 8, []],
+      49: ["Electiva 8", "electivo", 8, []],
+      50: ["Formulación y Evaluación de Proyectos", "complementario", 8, []],
+      51: ["Grupo de Investigación", "basico", 8, []],
+      52: ["Trabajo de Grado I", "basico", 8, []],
+
+      53: ["Electiva 9", "electivo", 9, []],
+      54: ["Electiva 10", "electivo", 9, []],
+      55: ["Electiva 11", "electivo", 9, []],
+      56: ["Ética y Bioética", "complementario", 9, []],
+      57: ["Trabajo de Grado II", "basico", 9, []]
+    };
+
+    const estado = {};
+
+    function crearInterfaz() {
+      const contenedor = document.getElementById('contenedor');
+      for (let s = 1; s <= 9; s++) {
+        const div = document.createElement('div');
+        div.className = 'semestre';
+        div.innerHTML = `<div class="titulo-semestre">Semestre ${s}</div>`;
+        const grid = document.createElement('div');
+        grid.className = 'grid';
+
+        for (const [codigo, [nombre, tipo, semestre, prereqs]] of Object.entries(materias)) {
+          if (semestre !== s) continue;
+          const btn = document.createElement('button');
+          btn.className = `btn ${tipo}`;
+          btn.textContent = nombre;
+          btn.id = `btn-${codigo}`;
+          btn.onclick = () => marcarComoCompletada(codigo);
+          grid.appendChild(btn);
+        }
+
+        div.appendChild(grid);
+        contenedor.appendChild(div);
+      }
+    }
+
+    function marcarComoCompletada(codigo) {
+      estado[codigo] = !estado[codigo];
+      const btn = document.getElementById(`btn-${codigo}`);
+      btn.classList.toggle('completado');
+    }
+
+    crearInterfaz();
+  </script>
+</body>
+</html>
